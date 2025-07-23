@@ -1,0 +1,43 @@
+{
+	"name": "push-on-duty",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"generate": "dotenvx run -- npx dirzzle-kit pull"
+	},
+	"dependencies": {
+		"@dnd-kit/core": "^6.3.1",
+		"@dnd-kit/modifiers": "^9.0.0",
+		"@dnd-kit/sortable": "^10.0.0",
+		"@dotenvx/dotenvx": "^1.45.1",
+		"@heroicons/react": "^2.2.0",
+		"@heroui/react": "^2.8.0-beta.10",
+		"@tailwindcss/postcss": "^4.1.10",
+		"alova": "^3.3.3",
+		"animejs": "^4.0.2",
+		"drizzle-orm": "^0.44.2",
+		"mysql2": "^3.14.1",
+		"next": "15.3.3",
+		"react": "19.1.0",
+		"react-dom": "19.1.0",
+		"react-hook-form": "^7.57.0",
+		"react-use": "^17.6.0",
+		"tailwindcss": "^4.1.10",
+		"valtio": "^2.1.5"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@eslint/eslintrc": "^3",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"drizzle-kit": "^0.31.1",
+		"postcss": "^8.5.5",
+		"tsx": "^4.19.4",
+		"typescript": "^5"
+	}
+}
