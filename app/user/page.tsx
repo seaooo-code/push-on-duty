@@ -37,7 +37,7 @@ function UserPage() {
 	);
 
 	return (
-		<div className="w-10/12 flex flex-col gap-4">
+		<div className="flex-1 h-0 overflow-hidden w-10/12 flex flex-col gap-4">
 			<div className="flex justify-between">
 				<Input
 					placeholder="搜索"
@@ -56,7 +56,9 @@ function UserPage() {
 					新建
 				</Button>
 			</div>
-			<UserTable users={usersRes?.users} loading={loading} />
+			<div className="flex-1 h-0 overflow-auto pl-1 pr-4 py-4">
+				<UserTable users={usersRes?.users} loading={loading} />
+			</div>
 			<AddUserModal
 				isOpen={isOpen}
 				onClose={onClose}

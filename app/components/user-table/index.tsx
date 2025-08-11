@@ -1,19 +1,16 @@
 "use client";
 import { alovaInstance } from "@/app/api";
 import type { usersTable } from "@/drizzle/schema";
-import { Button } from "@heroui/button";
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-	Tooltip,
-	User,
-	addToast,
-} from "@heroui/react";
-import { DeleteIcon } from "@heroui/shared-icons";
+	BuildingOfficeIcon,
+	MapPinIcon,
+	TagIcon,
+	TrashIcon,
+} from "@heroicons/react/16/solid";
+import { Button } from "@heroui/button";
+import { Card, CardBody } from "@heroui/card";
+import { User, addToast } from "@heroui/react";
+import { SearchIcon } from "@heroui/shared-icons";
 import { Spinner } from "@heroui/spinner";
 import { accessAction, useRequest } from "alova/client";
 
@@ -45,49 +42,64 @@ function UserTable({ users, loading }: UserTableProps) {
 			color: "success",
 		});
 	});
-	const rows =
-		users?.map?.((element) => (
-			<TableRow key={element.name}>
-				<TableCell>
-					<User
-						name={element.name}
-						avatarProps={{ src: element.avatar }}
-						description={element.email}
-					/>
-				</TableCell>
-				<TableCell>{element.createAt}</TableCell>
-				<TableCell>{element.updateAt}</TableCell>
-				<TableCell>
-					<Tooltip content="删除人员" color="danger">
-						<Button
-							isLoading={isDeleting}
-							isIconOnly
-							size="sm"
-							variant="light"
-							onPress={() => send(element.id)}
-							isDisabled={true}
-						>
-							<DeleteIcon color="red" />
-						</Button>
-					</Tooltip>
-				</TableCell>
-			</TableRow>
-		)) || [];
 	return (
-		<Table isVirtualized>
-			<TableHeader>
-				<TableColumn>姓名</TableColumn>
-				<TableColumn>创建时间</TableColumn>
-				<TableColumn>更新时间</TableColumn>
-				<TableColumn>操作</TableColumn>
-			</TableHeader>
-			<TableBody
-				loadingContent={<Spinner />}
-				loadingState={loading ? "loading" : "idle"}
-			>
-				{rows}
-			</TableBody>
-		</Table>
+		<div className="flex flex-wrap gap-4">
+			{users?.map((staff) => (
+				<Card key={staff.id} className="w-80" shadow="sm">
+					<CardBody className="p-4">
+						<div className="flex items-center group">
+							<div className="flex flex-col items-start flex-1">
+								<User
+									name={staff.name}
+									avatarProps={{ src: staff.avatar }}
+									description={
+										<>
+											<div>{staff.email}</div>
+											<div className="flex items-center gap-4 text-xs text-muted-foreground my-1">
+												<div className="flex items-center gap-1">
+													<BuildingOfficeIcon className="h-3 w-3" />
+													<span>{staff.departmentName}</span>
+												</div>
+												<div className="flex items-center gap-1">
+													<MapPinIcon className="h-3 w-3" />
+													<span>{staff.city}</span>
+												</div>
+											</div>
+											{staff.description ? (
+												<div className="flex items-center gap-1">
+													<TagIcon className="h-3 w-3" />
+													<span className="w-40 truncate">
+														{staff.description}
+													</span>
+												</div>
+											) : null}
+										</>
+									}
+								/>
+							</div>
+							<Button
+								className="self-baseline hidden group-hover:block"
+								color="danger"
+								variant="light"
+								size="sm"
+								isIconOnly
+								isDisabled
+								isLoading={isDeleting}
+								onPress={() => send(staff.id)}
+								startContent={<TrashIcon className="size-4" />}
+							/>
+						</div>
+					</CardBody>
+				</Card>
+			))}
+			{users?.length === 0 && !loading ? (
+				<div className="w-full flex flex-col items-center justify-center h-96">
+					<SearchIcon className="size-8 mb-4" />
+					<span className="font-bold">未找到相关结果</span>
+				</div>
+			) : null}
+			{loading ? <Spinner /> : null}
+		</div>
 	);
 }
 export default UserTable;

@@ -214,202 +214,204 @@ export default function DutyForm({ duty }: DutyFormProps) {
 		}
 	};
 	return (
-		<Form
-			className="w-2/4 gap-4 items-stretch"
-			onSubmit={handleSubmit(onSubmit)}
-		>
-			<ControllerInput
-				controller={{
-					name: "name",
-					control: control,
-					rules: { required: "必填字段" },
-				}}
-				input={{
-					placeholder: "请输入",
-					label: "名称",
-					labelPlacement: "outside",
-				}}
-			/>
-			<ControllerRadioGroup
-				controller={{
-					name: "enable",
-					control: control,
-					rules: { required: "必填字段" },
-				}}
-				radioGroup={{
-					label: <span className="text-sm text-black">启用</span>,
-					orientation: "horizontal",
-					children: (
-						<>
-							<CustomRadio value="1">是</CustomRadio>
-							<CustomRadio value="0">否</CustomRadio>
-						</>
-					),
-				}}
-			/>
-			<ControllerSelect
-				controller={{
-					name: "receiveId",
-					control: control,
-					rules: { required: "必填字段" },
-				}}
-				select={{
-					className: "flex-1",
-					placeholder: "请选择",
-					label: (
-						<div className="flex items-center">
-							通知群
-							<Tooltip content="请先将值班推送机器人拉到需要通知的飞书群中">
-								<InformationCircleIcon className="size-4 ml-1" />
-							</Tooltip>
-						</div>
-					),
-					labelPlacement: "outside",
-					children: (
-						<>
-							{chats?.data?.items?.map?.((item) => (
-								<SelectItem key={item.chat_id} textValue={item.name}>
-									<User
-										name={item.name}
-										avatarProps={{ src: item.avatar, size: "sm" }}
-									/>
-								</SelectItem>
-							))}
-						</>
-					),
-				}}
-			/>
-			<ControllerSelect
-				controller={{
-					name: "templateId",
-					control: control,
-					rules: { required: "必填字段" },
-				}}
-				select={{
-					className: "flex-1",
-					placeholder: "请选择",
-					label: "通知模板",
-					labelPlacement: "outside",
-					children: (
-						<>
-							{templateRes?.templates?.map((item) => (
-								<SelectItem key={item.id}>{item.name}</SelectItem>
-							))}
-						</>
-					),
-				}}
-			/>
-			<div>
-				<div className="text-small text-black mb-2">定时任务</div>
-				<ControllerCronInput
+		<div className="flex-1 h-0 overflow-auto flex justify-center">
+			<Form
+				className="w-2/4 gap-4 items-stretch"
+				onSubmit={handleSubmit(onSubmit)}
+			>
+				<ControllerInput
 					controller={{
-						name: "cronSchedule",
+						name: "name",
 						control: control,
 						rules: { required: "必填字段" },
 					}}
-					cronInput={{}}
+					input={{
+						placeholder: "请输入",
+						label: "名称",
+						labelPlacement: "outside",
+					}}
 				/>
-			</div>
-			<span className="text-small">值班周期</span>
-			<div className="flex items-center gap-1">
-				<span className="text-small text-gray-500">本周：</span>
+				<ControllerRadioGroup
+					controller={{
+						name: "enable",
+						control: control,
+						rules: { required: "必填字段" },
+					}}
+					radioGroup={{
+						label: <span className="text-sm text-black">启用</span>,
+						orientation: "horizontal",
+						children: (
+							<>
+								<CustomRadio value="1">是</CustomRadio>
+								<CustomRadio value="0">否</CustomRadio>
+							</>
+						),
+					}}
+				/>
 				<ControllerSelect
 					controller={{
-						name: "dayOfWeek",
+						name: "receiveId",
 						control: control,
 						rules: { required: "必填字段" },
 					}}
 					select={{
-						className: "w-28",
-						size: "sm",
+						className: "flex-1",
 						placeholder: "请选择",
+						label: (
+							<div className="flex items-center">
+								通知群
+								<Tooltip content="请先将值班推送机器人拉到需要通知的飞书群中">
+									<InformationCircleIcon className="size-4 ml-1" />
+								</Tooltip>
+							</div>
+						),
 						labelPlacement: "outside",
-						startContent: <CalendarDaysIcon className="size-5" />,
 						children: (
 							<>
-								{DayWeekItems.map((item) => (
-									<SelectItem key={item.key}>{item.name}</SelectItem>
+								{chats?.data?.items?.map?.((item) => (
+									<SelectItem key={item.chat_id} textValue={item.name}>
+										<User
+											name={item.name}
+											avatarProps={{ src: item.avatar, size: "sm" }}
+										/>
+									</SelectItem>
 								))}
 							</>
 						),
 					}}
 				/>
-				<ControllerTimeInput
+				<ControllerSelect
 					controller={{
-						name: "startDayTime",
+						name: "templateId",
 						control: control,
 						rules: { required: "必填字段" },
 					}}
-					timeInput={{
-						className: "w-22",
-						size: "sm",
-						granularity: "minute",
-						hourCycle: 24,
-						hideTimeZone: true,
-						startContent: <ClockIcon className="size-5" />,
+					select={{
+						className: "flex-1",
+						placeholder: "请选择",
+						label: "通知模板",
+						labelPlacement: "outside",
+						children: (
+							<>
+								{templateRes?.templates?.map((item) => (
+									<SelectItem key={item.id}>{item.name}</SelectItem>
+								))}
+							</>
+						),
 					}}
 				/>
-				~
-				<span className="text-small text-gray-500">
-					下周：
-					{dayOfWeek && startDayTime
-						? calculateEndDateTime(dayOfWeek, startDayTime).formated
-						: "****"}
-				</span>
-			</div>
-			<Autocomplete
-				labelPlacement="outside"
-				label={
-					<div className="flex items-center">
-						值班人员
-						<Tooltip content="请先在人员列表添加需要值班的人员，选择人员后勾选绿色图标的为当前值班人员，值班顺序按从左到右、从上到下">
-							<InformationCircleIcon className="size-4 ml-1" />
-						</Tooltip>
-					</div>
-				}
-				placeholder="请输入搜索并添加"
-				listboxProps={{ emptyContent: "暂无数据" }}
-				onInputChange={setSearchInput}
-				selectedKey={""}
-				onSelectionChange={handleUserSelectChange}
-				isLoading={isSearching}
-				items={searchUsers.users || []}
-			>
-				{(item) => (
-					<AutocompleteItem key={item.id} textValue={item.name}>
-						<User
-							name={item.name}
-							avatarProps={{
-								src: item.avatar,
-								size: "sm",
-							}}
-						/>
-					</AutocompleteItem>
-				)}
-			</Autocomplete>
-			<UserCardList
-				users={selectedUsers}
-				setUsers={setSelectedUsers}
-				currentIndex={duty?.personIndex || 0}
-			/>
-			<div className="flex items-center gap-2">
-				<Button
-					type="submit"
-					color="primary"
-					variant="solid"
-					isLoading={isCreating || isUpdating}
+				<div>
+					<div className="text-small text-black mb-2">定时任务</div>
+					<ControllerCronInput
+						controller={{
+							name: "cronSchedule",
+							control: control,
+							rules: { required: "必填字段" },
+						}}
+						cronInput={{}}
+					/>
+				</div>
+				<span className="text-small">值班周期</span>
+				<div className="flex items-center gap-1">
+					<span className="text-small text-gray-500">本周：</span>
+					<ControllerSelect
+						controller={{
+							name: "dayOfWeek",
+							control: control,
+							rules: { required: "必填字段" },
+						}}
+						select={{
+							className: "w-28",
+							size: "sm",
+							placeholder: "请选择",
+							labelPlacement: "outside",
+							startContent: <CalendarDaysIcon className="size-5" />,
+							children: (
+								<>
+									{DayWeekItems.map((item) => (
+										<SelectItem key={item.key}>{item.name}</SelectItem>
+									))}
+								</>
+							),
+						}}
+					/>
+					<ControllerTimeInput
+						controller={{
+							name: "startDayTime",
+							control: control,
+							rules: { required: "必填字段" },
+						}}
+						timeInput={{
+							className: "w-22",
+							size: "sm",
+							granularity: "minute",
+							hourCycle: 24,
+							hideTimeZone: true,
+							startContent: <ClockIcon className="size-5" />,
+						}}
+					/>
+					~
+					<span className="text-small text-gray-500">
+						下周：
+						{dayOfWeek && startDayTime
+							? calculateEndDateTime(dayOfWeek, startDayTime).formated
+							: "****"}
+					</span>
+				</div>
+				<Autocomplete
+					labelPlacement="outside"
+					label={
+						<div className="flex items-center">
+							值班人员
+							<Tooltip content="请先在人员列表添加需要值班的人员，选择人员后勾选绿色图标的为当前值班人员，值班顺序按从左到右、从上到下">
+								<InformationCircleIcon className="size-4 ml-1" />
+							</Tooltip>
+						</div>
+					}
+					placeholder="请输入搜索并添加"
+					listboxProps={{ emptyContent: "暂无数据" }}
+					onInputChange={setSearchInput}
+					selectedKey={""}
+					onSelectionChange={handleUserSelectChange}
+					isLoading={isSearching}
+					items={searchUsers.users || []}
 				>
-					提交
-				</Button>
-				<Button
-					type="reset"
-					variant="bordered"
-					color="secondary"
-					onPress={() => reset()}
-				>
-					重置
-				</Button>
-			</div>
-		</Form>
+					{(item) => (
+						<AutocompleteItem key={item.id} textValue={item.name}>
+							<User
+								name={item.name}
+								avatarProps={{
+									src: item.avatar,
+									size: "sm",
+								}}
+							/>
+						</AutocompleteItem>
+					)}
+				</Autocomplete>
+				<UserCardList
+					users={selectedUsers}
+					setUsers={setSelectedUsers}
+					currentIndex={duty?.personIndex || 0}
+				/>
+				<div className="flex items-center gap-2">
+					<Button
+						type="submit"
+						color="primary"
+						variant="solid"
+						isLoading={isCreating || isUpdating}
+					>
+						提交
+					</Button>
+					<Button
+						type="reset"
+						variant="bordered"
+						color="secondary"
+						onPress={() => reset()}
+					>
+						重置
+					</Button>
+				</div>
+			</Form>
+		</div>
 	);
 }

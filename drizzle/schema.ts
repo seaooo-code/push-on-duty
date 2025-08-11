@@ -3,6 +3,7 @@ import {
 	AnyMySqlColumn,
 	bigint,
 	int,
+	json,
 	mysqlSchema,
 	mysqlTable,
 	primaryKey,
@@ -63,6 +64,7 @@ export const templatesTable = mysqlTable(
 			.onUpdateNow()
 			.notNull(),
 		imageUrl: varchar("image_url", { length: 255 }).notNull(),
+		vars: json(),
 	},
 	(table) => [primaryKey({ columns: [table.id], name: "templates_table_id" })],
 );
@@ -79,6 +81,10 @@ export const usersTable = mysqlTable(
 			.defaultNow()
 			.onUpdateNow()
 			.notNull(),
+		city: varchar({ length: 255 }).notNull(),
+		description: varchar({ length: 255 }),
+		departmentId: varchar("department_id", { length: 255 }).notNull(),
+		departmentName: varchar("department_name", { length: 255 }).notNull(),
 	},
 	(table) => [
 		primaryKey({ columns: [table.id], name: "users_table_id" }),

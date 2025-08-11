@@ -2,12 +2,8 @@
 import { alovaInstance } from "@/app/api";
 import DutyForm from "@/app/components/duty-form";
 import type { DutyWithUsers } from "@/app/interface";
-import type { dutiesTable, usersTable } from "@/drizzle/schema";
 import { useRequest } from "alova/client";
 import { useParams } from "next/navigation";
-
-type IUser = typeof usersTable.$inferSelect;
-type IDutySelect = typeof dutiesTable.$inferSelect;
 
 const DutyDetail = () => {
 	const params = useParams();

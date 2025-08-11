@@ -2,17 +2,20 @@
 import { alovaInstance } from "@/app/api";
 import { GlobalStore } from "@/app/store";
 import {
+	ArrowLeftStartOnRectangleIcon,
+	CalendarDaysIcon,
 	DocumentIcon,
-	ListBulletIcon,
+	HomeIcon,
 	UsersIcon,
 } from "@heroicons/react/16/solid";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/navbar";
-import { User } from "@heroui/react";
+import { Skeleton, User, addToast } from "@heroui/react";
 import { useRequest } from "alova/client";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { useSnapshot } from "valtio/react";
 
 const Scopes = [
@@ -36,9 +39,13 @@ type IUserInfo = {
 export default function Header() {
 	const snap = useSnapshot(GlobalStore);
 	const path = usePathname();
-	useRequest(alovaInstance.Get<IUserInfo>("/feishu/user-info"), {
-		initialData: {},
-	}).onSuccess((res) => {
+	const { loading, send } = useRequest(
+		alovaInstance.Get<IUserInfo>("/feishu/user-info"),
+		{
+			initialData: {},
+			immediate: false,
+		},
+	).onSuccess((res) => {
 		const user = res.data.data;
 		if (user) {
 			GlobalStore.loginUser = {
@@ -50,6 +57,12 @@ export default function Header() {
 			GlobalStore.isLogin = true;
 		}
 	});
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		if (localStorage.getItem("access_token")) {
+			send();
+		}
+	}, []);
 
 	const handleLogin = () => {
 		window.location.href = `https://open.f.mioffice.cn/open-apis/authen/v1/authorize?app_id=cli_a8aff646bc7a1063&redirect_uri=${encodeURIComponent(location.origin)}&scope=${encodeURIComponent(Scopes.join(" "))}`;
@@ -60,13 +73,42 @@ export default function Header() {
 		location.reload();
 	};
 	return (
-		<Navbar maxWidth="full">
+		<Navbar
+			maxWidth="full"
+			classNames={{
+				item: [
+					"flex",
+					"relative",
+					"h-full",
+					"items-center",
+					"data-[active=true]:after:content-['']",
+					"data-[active=true]:after:absolute",
+					"data-[active=true]:after:bottom-0",
+					"data-[active=true]:after:left-0",
+					"data-[active=true]:after:right-0",
+					"data-[active=true]:after:h-[2px]",
+					"data-[active=true]:after:rounded-[2px]",
+					"data-[active=true]:after:bg-primary",
+				],
+			}}
+		>
 			<NavbarBrand>
 				<Link className="font-bold text-xl" href="/" color="foreground">
 					值班推送
 				</Link>
 			</NavbarBrand>
-			<NavbarContent className="hidden sm:flex gap-4" justify="center">
+			<NavbarContent className="hidden sm:flex gap-8" justify="center">
+				<NavbarItem isActive={path === "/"}>
+					<Link
+						className="flex items-center gap-1"
+						href="/"
+						as={NextLink}
+						color={path === "/" ? "primary" : "foreground"}
+					>
+						<HomeIcon className="size-5" />
+						首页
+					</Link>
+				</NavbarItem>
 				<NavbarItem isActive={path.startsWith("/duty")}>
 					<Link
 						className="flex items-center gap-1"
@@ -74,7 +116,7 @@ export default function Header() {
 						as={NextLink}
 						color={path.startsWith("/duty") ? "primary" : "foreground"}
 					>
-						<ListBulletIcon className="size-4" />
+						<CalendarDaysIcon className="size-5" />
 						计划
 					</Link>
 				</NavbarItem>
@@ -85,7 +127,7 @@ export default function Header() {
 						as={NextLink}
 						color={path.startsWith("/user") ? "primary" : "foreground"}
 					>
-						<UsersIcon className="size-4" />
+						<UsersIcon className="size-5" />
 						人员
 					</Link>
 				</NavbarItem>
@@ -96,33 +138,39 @@ export default function Header() {
 						as={NextLink}
 						color={path.startsWith("/template") ? "primary" : "foreground"}
 					>
-						<DocumentIcon className="size-4" />
+						<DocumentIcon className="size-5" />
 						模板
 					</Link>
 				</NavbarItem>
 			</NavbarContent>
 			<NavbarContent justify="end">
 				{snap.loginUser ? (
-					<div className="flex items-center">
-						<User
-							name={""}
-							avatarProps={{
-								src: snap.loginUser?.avatarUrl,
-								size: "sm",
-								isBordered: true,
-							}}
+					<div className="flex items-center gap-1">
+						{loading ? (
+							<Skeleton className="flex rounded-full w-8 h-8" />
+						) : (
+							<User
+								name={""}
+								avatarProps={{
+									src: snap.loginUser?.avatarUrl,
+									size: "sm",
+									isBordered: true,
+								}}
+							/>
+						)}
+
+						<Button
+							variant="light"
+							onPress={handleLogout}
+							color="danger"
+							startContent={
+								<ArrowLeftStartOnRectangleIcon className="size-5" />
+							}
+							isIconOnly
 						/>
-						<Button variant="light" size="sm" onPress={handleLogout}>
-							注销
-						</Button>
 					</div>
 				) : (
-					<Button
-						variant="bordered"
-						color="primary"
-						onPress={handleLogin}
-						size="sm"
-					>
+					<Button variant="solid" color="primary" onPress={handleLogin}>
 						登录
 					</Button>
 				)}

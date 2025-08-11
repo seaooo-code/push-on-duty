@@ -1,7 +1,7 @@
 "use client";
 import { alovaInstance } from "@/app/api";
 import DutyTable from "@/app/components/duty-table";
-import type { DutyWithCurrentUser } from "@/app/interface";
+import type { DutyWithDetails } from "@/app/interface";
 import { GlobalStore } from "@/app/store";
 import { PlusIcon } from "@heroicons/react/16/solid";
 import { Button } from "@heroui/button";
@@ -18,7 +18,7 @@ function DutyPage() {
 
 	const { data: dutiesRes, loading } = useWatcher(
 		alovaInstance.Get<{
-			duties: Array<DutyWithCurrentUser>;
+			duties: Array<DutyWithDetails>;
 		}>("/duties/search", {
 			params: {
 				keyword: searchInput,
@@ -41,7 +41,7 @@ function DutyPage() {
 	);
 
 	return (
-		<div className="w-10/12 flex flex-col gap-4">
+		<div className="flex-1 h-0 overflow-hidden w-10/12 flex flex-col gap-4">
 			<div className="flex justify-between">
 				<Input
 					placeholder="搜索"
@@ -61,7 +61,9 @@ function DutyPage() {
 					新建
 				</Button>
 			</div>
-			<DutyTable data={dutiesRes.duties || []} loading={loading} />
+			<div className="flex-1 h-0 overflow-auto pl-1 pr-4 py-4">
+				<DutyTable data={dutiesRes.duties || []} loading={loading} />
+			</div>
 		</div>
 	);
 }

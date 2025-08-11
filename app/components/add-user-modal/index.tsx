@@ -110,6 +110,7 @@ function AddUserModal(props: AddUserModalProps) {
 												src: item.avatar,
 												size: "sm",
 											}}
+											description={item.email}
 										/>
 									</AutocompleteItem>
 								)}

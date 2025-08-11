@@ -14,6 +14,8 @@ export interface DutyWithUsers extends Duty {
 	users: User[];
 }
 
-export interface DutyWithCurrentUser extends Duty {
+export interface DutyWithDetails extends Duty {
 	currentUser: User;
+	template?: Template;
+	userCount: number;
 }

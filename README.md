@@ -42,7 +42,7 @@ npm install
 
 1. 复制环境变量文件：
 ```bash
-cp .env.testing .env
+cp .env.local .env
 ```
 
 2. 配置环境变量：

@@ -23,7 +23,7 @@ export default function RootLayout({
 				<Providers>
 					<div className="h-screen w-screen flex flex-col">
 						<Header />
-						<div className="flex-1 h-0 flex flex-col items-center p-4 overflow-auto">
+						<div className="flex-1 h-0 flex flex-col items-center p-4 overflow-hidden">
 							<Suspense>{children}</Suspense>
 						</div>
 					</div>
